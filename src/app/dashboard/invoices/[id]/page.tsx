@@ -51,7 +51,8 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
         </div>
         <div className="flex items-center gap-3">
           <span className={`badge ${STATUS_COLORS[status]} text-sm px-3 py-1`}>{STATUS_LABELS[status]}</span>
-          <InvoiceActions
+         <InvoiceActions
+            userPlan="free"
             invoiceId={params.id}
             status={(inv as any).status}
             clientEmail={(inv as any).client?.client_email || ''}

@@ -10,15 +10,22 @@ interface Props {
 }
 
 const NAV = [
-  { href: '/dashboard', label: 'Overview', icon: '▦' },
-  { href: '/dashboard/invoices', label: 'Invoices', icon: '◻' },
-  { href: '/dashboard/clients', label: 'Clients', icon: '◯' },
-  { href: '/dashboard/settings', label: 'Settings', icon: '⊙' },
+  { href: '/dashboard',          label: 'Overview',  icon: '▦' },
+  { href: '/dashboard/invoices', label: 'Invoices',  icon: '◻' },
+  { href: '/dashboard/clients',  label: 'Clients',   icon: '◯' },
+  { href: '/dashboard/billing',  label: 'Billing',   icon: '◈' },
+  { href: '/dashboard/settings', label: 'Settings',  icon: '⊙' },
 ]
+
+const PLAN_BADGE: Record<string, string> = {
+  free:     'bg-gray-100 text-gray-500',
+  pro:      'bg-blue-50 text-blue-700',
+  business: 'bg-amber-50 text-amber-700',
+}
 
 export default function DashboardShell({ user, children }: Props) {
   const pathname = usePathname()
-  const router = useRouter()
+  const router   = useRouter()
 
   async function signOut() {
     const supabase = createClient()
@@ -35,9 +42,12 @@ export default function DashboardShell({ user, children }: Props) {
             InvoiceGuard
           </Link>
         </div>
+
         <nav className="flex-1 py-4 px-3 space-y-0.5">
           {NAV.map(({ href, label, icon }) => {
-            const active = href === '/dashboard' ? pathname === href : pathname.startsWith(href)
+            const active = href === '/dashboard'
+              ? pathname === href
+              : pathname.startsWith(href)
             return (
               <Link
                 key={href} href={href}
@@ -52,21 +62,30 @@ export default function DashboardShell({ user, children }: Props) {
             )
           })}
         </nav>
+
         <div className="p-3 border-t border-gray-100">
-          <div className="px-3 py-2">
+          <div className="px-3 py-2 mb-1">
             <p className="text-xs font-medium text-ink truncate">{user.name || user.email}</p>
-            <p className="text-xs text-slate capitalize">{user.plan} plan</p>
+            <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium capitalize ${PLAN_BADGE[user.plan] || PLAN_BADGE.free}`}>
+              {user.plan}
+            </span>
           </div>
-          <button onClick={signOut} className="w-full text-left px-3 py-1.5 text-xs text-slate hover:text-ink transition-colors">
+          {user.plan === 'free' && (
+            <Link href="/dashboard/billing" className="block text-center text-xs bg-accent text-white rounded px-2 py-1.5 mb-2 hover:bg-blue-700 transition-colors">
+              Upgrade to Pro →
+            </Link>
+          )}
+          <button
+            onClick={signOut}
+            className="w-full text-left px-3 py-1.5 text-xs text-slate hover:text-ink transition-colors"
+          >
             Sign out
           </button>
         </div>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      {/* Main content */}
+      <main className="flex-1 overflow-auto">{children}</main>
     </div>
   )
 }

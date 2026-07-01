@@ -22,9 +22,9 @@ export default async function NewInvoicePage() {
       {!check.allowed ? (
         <div className="space-y-4">
           <PaywallBanner
-            reason={check.reason!}
-            upgrade={check.upgrade!}
-          />
+  reason={check.reason!}
+  upgrade="pro"
+/>
           <div className="card p-6 opacity-40 pointer-events-none select-none">
             <p className="text-center text-slate text-sm py-8">
               Invoice form locked — upgrade to create more invoices

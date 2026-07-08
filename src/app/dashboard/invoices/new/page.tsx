@@ -21,7 +21,10 @@ export default async function NewInvoicePage() {
       </div>
 
       {!check.allowed ? (
-        <PaywallBanner reason={check.reason!} upgrade={check.upgrade!} />
+     <PaywallBanner 
+  reason={check.reason!} 
+  upgrade={check.upgrade === "business" ? "business" : "pro"} 
+/>
       ) : (
         <>
           {check.limit && (
